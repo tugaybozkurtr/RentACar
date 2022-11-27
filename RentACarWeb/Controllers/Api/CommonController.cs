@@ -20,7 +20,7 @@ namespace RentACarWeb.Controllers.Api
         }
 
         [HttpGet("menüs")]
-        public async Task<IActionResult> GetRayons()
+        public async Task<IActionResult> GetMainMenus()
         {
             return Ok(await context
                 .MainMenus

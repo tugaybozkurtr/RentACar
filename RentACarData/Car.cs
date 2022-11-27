@@ -48,6 +48,7 @@ namespace RentACarData
         [NotMapped]
         public int DiscountRate => Price > 0 ? (int)Math.Round((Price - (DiscountedPrice ?? Price)) * 100 / Price) : 0;
 
+
         [NotMapped]
         public string ImageSrc => CarImages.Any() ? $"data:image/jpeg;base64, {Convert.ToBase64String(CarImages.First().Image)}" : "/images/no-image.png";
 

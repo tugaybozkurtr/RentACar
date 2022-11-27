@@ -12,13 +12,32 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="compilerconfig.json" />
-    <_ContentIncludedByDefault Remove="wwwroot\css\Site.min.css" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
     <None Include="wwwroot\lib\admin\startbootstrap-sb-admin-2\js\sb-admin-2.js" />
     <None Include="wwwroot\lib\admin\startbootstrap-sb-admin-2\js\sb-admin-2.min.js" />
+    <None Include="wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js" />
+    <None Include="wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\additional-methods.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\additional-methods.min.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\jquery.validate.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\jquery.validate.min.js" />
+    <None Include="wwwroot\lib\jquery-validation\LICENSE.md" />
+    <None Include="wwwroot\lib\jquery\dist\jquery.js" />
+    <None Include="wwwroot\lib\jquery\dist\jquery.min.js" />
+    <None Include="wwwroot\lib\jquery\dist\jquery.min.map" />
+    <None Include="wwwroot\lib\jquery\jquery-migrate-3.0.1.min.js" />
+    <None Include="wwwroot\lib\jquery\jquery-ui.js" />
+    <None Include="wwwroot\lib\jquery\jquery.animateNumber.min.js" />
+    <None Include="wwwroot\lib\jquery\jquery.countdown.min.js" />
+    <None Include="wwwroot\lib\jquery\jquery.easing.1.3.js" />
+    <None Include="wwwroot\lib\jquery\jquery.fancybox.min.js" />
+    <None Include="wwwroot\lib\jquery\jquery.magnific-popup.min.js" />
+    <None Include="wwwroot\lib\jquery\jquery.stellar.min.js" />
+    <None Include="wwwroot\lib\jquery\jquery.sticky.js" />
+    <None Include="wwwroot\lib\jquery\jquery.waypoints.min.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,6 +64,8 @@
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Admin\Theme\" />
+    <Folder Include="Theme\" />
+    <Folder Include="Views\ListingViewModel\" />
   </ItemGroup>
 
 </Project>

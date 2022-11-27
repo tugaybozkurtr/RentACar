@@ -28,7 +28,7 @@ public class ShoppingCartService : IShoppingCartService
     public async Task AddToCart(Guid id)
     {
         var userId = Guid.Parse(http.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier));
-        var product = await context.Cars.FindAsync(id);
+        var car = await context.Cars.FindAsync(id);
         var shoppingCartItem = new ShoppingCartItem
         {
             ApplicationUserId = userId,

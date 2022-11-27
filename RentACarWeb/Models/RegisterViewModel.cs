@@ -37,5 +37,7 @@ namespace RentACarWeb.Models
         [DataType(DataType.Date)]
         [Required(ErrorMessage = "{0} alanı boş bırakılamaz!")]
         public DateTime BirthDate { get; set; }
+
+       
     }
 }

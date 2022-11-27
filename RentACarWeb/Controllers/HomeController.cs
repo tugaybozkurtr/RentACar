@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using NETCore.MailKit.Core;
 using RentACarData;
@@ -55,6 +56,13 @@ namespace RentACarWeb.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Detay(Guid id, int? page)
+        {
+            var model = await context.Cars.FindAsync(id);
+            ViewBag.Page = page;
+            return View(model);
+        }
+
         public IActionResult AboutUs()
         {
             return View();
@@ -64,6 +72,7 @@ namespace RentACarWeb.Controllers
         {
             return View();
         }
+
 
         [HttpPost]
         public async Task<IActionResult> ContactUs(ContactUsViewModel model)
@@ -85,100 +94,19 @@ namespace RentACarWeb.Controllers
             return View(model);
         }
 
+
         [HttpGet]
 
-        public async Task<IActionResult> Product(Guid id)
+        public IActionResult Car()
         {
-            var model = await context.Cars.FindAsync(id);
-            ViewBag.CreditCards = new[]
-            {
-                new CreditCardViewModel
-                {
-                    Code = "bonus",
-                    Installments =  new[] {
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1, Exists = true },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1, Exists = true },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1.06m, Exists = true },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1.15m, Exists = true },
-                    }.ToList()
-                },
-                new CreditCardViewModel
-                {
-                    Code = "world",
-                    Installments =  new[] {
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1, Exists = true },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1, Exists = true },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1.052m, Exists = true },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1.15m, Exists = true },
-                    }.ToList()
-                },
-                new CreditCardViewModel
-                {
-                    Code = "maximum",
-                    Installments =  new[] {
-                        new InstallmentViewModel { Rate = 1, Exists = true },
-                        new InstallmentViewModel { Rate = 1, Exists = true },
-                        new InstallmentViewModel { Rate = 1, Exists = true },
-                        new InstallmentViewModel { Rate = 1, Exists = true },
-                        new InstallmentViewModel { Rate = 1, Exists = true },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1.06m, Exists = true },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1.15m, Exists = true },
-                    }.ToList()
-                },
-                new CreditCardViewModel
-                {
-                    Code = "axess",
-                    Installments =  new[] {
-                        new InstallmentViewModel { Rate = 1, Exists = true },
-                        new InstallmentViewModel { Rate = 1, Exists = true },
-                        new InstallmentViewModel { Rate = 1, Exists = true },
-                        new InstallmentViewModel { Rate = 1, Exists = true },
-                        new InstallmentViewModel { Rate = 1, Exists = true },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1.06m, Exists = true },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1, Exists = false },
-                        new InstallmentViewModel { Rate = 1.15m, Exists = true },
-                    }.ToList()
-                },
-            };
+            List<Car> model = context.Cars.ToList();
             return View(model);
         }
 
         [HttpGet, Authorize]
         public async Task<IActionResult> AddToCart(Guid id)
         {
-            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var product = await context.Cars.FindAsync(id);
-            var shoppingCartItem = new ShoppingCartItem
-            {
-                ApplicationUserId = userId,
-                Quantity = 1,
-                CarId = id,
-                DateCreated = DateTime.Now,
-                Enabled = true,
-            };
-            await context.ShoppingCartItems.AddAsync(shoppingCartItem);
-            await context.SaveChangesAsync();
+            await shoppingCartService.AddToCart(id);
             TempData["addedToCart"] = true;
             return Redirect(Request.Headers["Referer"].ToString());
         }
@@ -187,46 +115,21 @@ namespace RentACarWeb.Controllers
         [HttpGet, Authorize]
         public async Task<IActionResult> RemoveFromCart(Guid id)
         {
-            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var item = await context.
-                ShoppingCartItems.
-                OrderBy(p => p.DateCreated).
-                LastOrDefaultAsync(p => p.ApplicationUserId == userId && p.CarId == id);
-
-            if (item is null)
-            {
-                return BadRequest();
-            }
-            context.ShoppingCartItems.Remove(item);
-            await context.SaveChangesAsync();
+            await shoppingCartService.RemoveFromCart(id);
             return RedirectToAction("ShoppingCart", "Account");
         }
 
         [HttpGet, Authorize]
         public async Task<IActionResult> RemoveAllFromCart(Guid id)
         {
-            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var items = await context.ShoppingCartItems.Where(p => p.ApplicationUserId == userId && p.CarId == id).ToListAsync();
-            if (items is null)
-            {
-                return BadRequest();
-            }
-            context.ShoppingCartItems.RemoveRange(items);
-            await context.SaveChangesAsync();
+            await shoppingCartService.RemoveAllFromCart(id);
             return RedirectToAction("ShoppingCart", "Account");
         }
 
         [HttpGet, Authorize]
         public async Task<IActionResult> ClearCart()
         {
-            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var items = await context.ShoppingCartItems.Where(p => p.ApplicationUserId == userId).ToListAsync();
-            if (items is null)
-            {
-                return BadRequest();
-            }
-            context.ShoppingCartItems.RemoveRange(items);
-            await context.SaveChangesAsync();
+            await shoppingCartService.ClearCart();
             return RedirectToAction("ShoppingCart", "Account");
         }
 
@@ -236,5 +139,6 @@ namespace RentACarWeb.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
     }
 }

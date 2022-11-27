@@ -117,7 +117,11 @@ app.MapControllerRoute(
     pattern: "c/{name}/{id}/{page?}", defaults: new { controller = "Home", action = "Category" });
 
 app.MapControllerRoute(
-    name: "product",
-    pattern: "p/{name}/{id}", defaults: new { controller = "Home", action = "Product" });
+    name: "car",
+    pattern: "p/{name}/{id}", defaults: new { controller = "Home", action = "Car" });
+
+app.MapControllerRoute(
+    name: "detay",
+    pattern: "d/{name}/{id}", defaults: new { controller = "Home", action = "Detay" });
 
 app.Run();

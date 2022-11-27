@@ -123,6 +123,7 @@
       ]
     },
     {
+      "provider": "unpkg",
       "library": "bootstrap@4.6.2",
       "destination": "Theme/bootstrap/",
       "files": [
